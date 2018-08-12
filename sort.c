@@ -1,19 +1,34 @@
 
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <time.h>
 /**函数声明*/
+
 void bubbSort(int*, int);
 void insertSort(int*, int);
 void selectSort(int*, int);
+void xierSort(int*, int);
 void format_print(int* , int);
 
-int main()
-{
+// int main()
+// {   
+//     srand((unsigned) time(NULL));  //用时间做种，每次产生随机数不一样
+//     int len = rand() % 30 + 1;
+//     int i;
+//     int* arr = (int*)malloc(len * sizeof(int));
+//     /**生成数组*/
+//     for (i = 0; i < len; i++)
+//     {
+//         arr[i] = rand() % 200 ;
+//     }
+//     printf("%d \n", len);
     
-    int arr[5] = {40,8,15,18,12};
-    selectSort(arr, 5);
-    return 0;
-}
+
+
+//     xierSort(arr, 5);
+//     return 0;
+// }
+
 
 void format_print(int* arr, int len)
 {
@@ -121,6 +136,50 @@ void selectSort(int* arr, int len)
             arr[min] = arr[i];
             arr[i] = t;
 
+        }
+        /**打印*/
+        format_print(arr, len);
+    }
+}
+
+/**
+ * 希尔排序
+ * 基本思路: 在插入排序上做了优化,
+ * 每次计算间隔来做插入排序
+ *  {9,1,5,8,3,7,6,0,2,4};
+ */
+
+void xierSort(int* arr, int len)
+{
+    if (arr != NULL)
+    {
+        
+        /**计算最大间隔*/
+        int h = 1;
+        while(h < len / 3) {
+            h = h * 3 + 1;
+        }
+
+        int i, j, t;
+        while(h > 0) {
+            for (i = h; i < len; i++) 
+            {
+                t = arr[i];
+                j = i;
+                /** j > h - 1; 大于间隔*/
+                while(j > h - 1 && arr[j - h] > t)
+                {
+                    /**右移*/
+                    arr[j] = arr[j - h];
+                    j = j - h;
+                }
+                /**插入点*/
+                arr[j] = t;
+            }
+            
+            
+            /**减小间隔*/
+            h = (h - 1) / 3;
         }
         /**打印*/
         format_print(arr, len);
