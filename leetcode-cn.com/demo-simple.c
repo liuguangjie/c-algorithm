@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../sort.h"
+
 int removeDuplicates(int* nums, int numsSize) {
 
 
