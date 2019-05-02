@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <limits.h>
 /**函数声明*/
 
 void bubbSort(int*, int);
@@ -9,26 +10,197 @@ void insertSort(int*, int);
 void selectSort(int*, int);
 void xierSort(int*, int);
 void format_print(int* , int);
-
-// int main()
-// {   
-//     srand((unsigned) time(NULL));  //用时间做种，每次产生随机数不一样
-//     int len = rand() % 30 + 1;
-//     int i;
-//     int* arr = (int*)malloc(len * sizeof(int));
-//     /**生成数组*/
-//     for (i = 0; i < len; i++)
-//     {
-//         arr[i] = rand() % 200 ;
-//     }
-//     printf("%d \n", len);
+void quickSort(int* , int , int );
+void insertDemo2(int*, int);
+void select2(int*, int);
+void merge(int*, int, int , int);
+void mergeSort(int*, int, int);
+void baseNumberSort(int* arr, int);
+void restZero(int*, int);
+int main()
+{   
+    srand((unsigned) time(NULL));  //用时间做种，每次产生随机数不一样
+    int len = 10;
+    int i;
+    int* arr = (int*)malloc(len * sizeof(int));
+    /**生成数组*/
+    for (i = 0; i < len; i++)
+    {
+        arr[i] = rand()>>22 ;
+    }
+    //int arr[10] = {6,3,4,2,1,7,8,9,0,5};
+   // int arr[8] = {1,3,5,2,4,6,8,10};
+    printf("原数组\n");
+    format_print(arr, len);
+    printf("排序后的数组\n");
+    //insertDemo2(arr, len);
+    //quickSort(arr,0, len - 1);
+    //select2(arr,len);
+    // {1,3,5,2,4,6,8,10}
+    //mergeSort(arr, 0,len - 1);
+    baseNumberSort(arr, len);
+    format_print(arr, len);
     
 
 
-//     xierSort(arr, 5);
-//     return 0;
-// }
+    //bubbSort(arr, 10);
 
+    return 0;
+}
+
+
+//基数排序, 非负数
+void baseNumberSort(int* arr, int len) {
+    int min = INT_MIN;
+    int i,j,k,m,n,q;
+    for (i=0;i<len;i++) {
+        if (arr[i] > min) {
+            min = arr[i];
+        }
+    }
+    // 获取最大数的位数
+    int bits = 0;
+    int nums = 1;
+    if (min > 0) {
+        while (min>=nums)
+        {
+            bits++;
+            nums *=10;
+        }
+    }
+    // 存放每个位的数组
+    int* counts = (int*)malloc(10*sizeof(int));
+    restZero(counts, 10);
+    // 创建二维数组
+    int** table = (int **)malloc(sizeof(int *) * 10);;
+    for (i=0;i<10;i++) {
+        table[i] = (int *)malloc(sizeof(int) * len);
+        for (j=0;j<len;j++) {
+            table[i][j] = 0;
+        }
+    }
+
+
+    for (i=0,n=1;i < bits;i++,n*=10) {
+
+        for(j=0;j<len;j++) {
+            int y = arr[j]/n%10;
+            table[y][counts[y]] = arr[j];
+            counts[y] ++;
+        }
+        int index=0;
+        
+        for (k=0;k<10;k++) {
+            if (counts[k] != 0) {
+                for(m=0;m<counts[k];m++) {
+                    arr[index] = table[k][m];
+                    index++;
+                }
+                counts[k]=0;   
+            }
+        }
+
+    }
+
+
+
+    //printf("%d\n", bits);
+
+
+
+}
+
+void restZero(int* arr, int len) {
+    int i;
+    for(i=0;i<len;i++) {
+        arr[i]=0;
+    }
+}
+
+void mergeSort(int* arr, int low, int high) {
+    int middle = (low + high) /2;
+    if (low < high) {
+        // 处理左边
+        mergeSort(arr, low, middle);
+        // 处理右边
+        mergeSort(arr,middle + 1, high);
+        // 归并
+        merge(arr, low, middle, high);
+    }
+}
+
+// 归并排序
+void merge(int* arr, int low, int middle, int high) {
+    // 用户存储归并后的临时数组
+    int len = high - low + 1;
+    int* temp = (int*)malloc(len*sizeof(int));
+    //记录第一个数组中需要便利的下标
+    int i = low;
+    // 记录第二个数组总需要便利的下标
+    int j = middle + 1;
+    // 记录下标
+    int index = 0;
+    // 遍历两个数组取出最小数字,放入临时变量中
+    while (i<=middle&&j<=high)
+    {
+        if(arr[i] <= arr[j]) {
+            //把小的数据放在临时数组中
+            temp[index] = arr[i];
+            i++;
+        } else  {
+            temp[index] = arr[j];
+            j++;
+        }
+        index++;
+    }
+
+    // 处理多余的数据
+    while (j<=high)
+    {
+        temp[index] = arr[j];
+        j++;
+        index++;
+    }
+
+    while (i<=middle)
+    {
+        temp[index] = arr[i];
+        i++;
+        index++;
+    }
+    
+    // 把临时数组中的数据重新存入原数组
+    for(int k=0; k < len; k++) {
+        arr[k+low] = temp[k];
+    }
+
+}
+
+void quickSort(int* arr, int start, int end) {
+    if (start < end) {
+        int key = arr[start];
+    int left = start;
+    int right = end;
+    //int tm = 0;
+    while (left < right)
+    {
+        while(left < right && arr[right] >= key) {right--;}
+        arr[left] = arr[right];
+        while(left < right && arr[left] <= key) {left++;}
+         arr[right] = arr[left];
+        // while(left < right && arr[--right] >= key);
+        // while(left < right && arr[++left] <= key);
+        // tm = arr[left];
+        // arr[left] = arr[right];
+        // arr[right] = tm;
+        // 交换
+    }
+    arr[left] = key;
+    quickSort(arr, start, left);
+    quickSort(arr, left+1, end);
+    }
+    
+}
 
 void format_print(int* arr, int len)
 {
@@ -60,14 +232,14 @@ void bubbSort(int* arr, int len)
         /** int arr[5] = {40,8,15,18,12}; */
         for( ;i < len - 1; i++)
         {
-            for (j = i + 1; j < len; j++)
+            for (j =0; j < len-i-1; j++)
             {
-                if (arr[i] > arr[j]) 
+                if (arr[j] > arr[j + 1]) 
                 {
                     /**交换位置**/
-                    t = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = t;
+                    t = arr[j];
+                    arr[j] = arr[j +1];
+                    arr[j+1] = t;
                 }
             }
 
@@ -108,6 +280,40 @@ void insertSort(int* arr, int len)
     }
     /**打印*/
     format_print(arr, len);
+}
+
+
+void insertDemo2(int* arr, int len){
+    int i, j,d=len / 2, t=0;
+    for (; d>0;d/= 2) {
+        for (i = d; i < len; i+=d) {
+
+            for (j=i-d;j>=0;j-=d) {
+                if (arr[j] > arr[j+d]) {
+                    t = arr[j];
+                    arr[j] = arr[j+d];
+                    arr[j+d] = t; 
+                }
+            }
+        }
+
+    }
+}
+
+void select2(int* arr, int len) {
+    int i,j,k, t;
+    for (i=0; i<len; i++) {
+        k = i;
+        for (j=i+1; j<len; j++) {
+            if (arr[k] > arr[j]) {
+                k = j;
+            }
+        }
+        // 交换
+        t = arr[k];
+        arr[k] = arr[i];
+        arr[i] = t;
+    }
 }
 
 /***
