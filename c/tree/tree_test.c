@@ -5,7 +5,7 @@ typedef struct Tree
 {
     struct Node* root; //根节点
     
-
+    struct Node* pre; //前一个节点
 } Tree;
 
 typedef struct Node
@@ -13,6 +13,8 @@ typedef struct Node
     int data;
     struct Node* left; //左子节点
     struct Node* right;// 右子节点
+    int leftType;
+    int rightType;
     
 }Node;
 
@@ -26,10 +28,11 @@ void seqTraverse(Node*); // 前序遍历树
 void middleTraverse(Node*);//中序 遍历树
 void afterTraverse(Node*);//后序 遍历树
 void insertArr(Tree* ,int*, int);// 插入数据 用数组
+
+void threadNode(Tree*,Node*); //  线索二叉树的定义
 int main() 
 {
     Tree* tree = createTree();
-    tree->root = NULL;
     // Node* root = createNode(1);
     // Node* left = createNode(2);
     
@@ -73,7 +76,10 @@ int main()
 // 函数实现
 //创建树
 Tree* createTree() {
-    return (Tree*)malloc(sizeof(Tree));
+    Tree* t = (Tree*)malloc(sizeof(Tree));
+    t->root=NULL;
+    t->pre=NULL;
+    return t;
 }
 
 //创建节点
@@ -82,7 +88,33 @@ Node* createNode(int data) {
     n->left = NULL;
     n->right = NULL;
     n->data = data;
+    n->leftType=0;
+    n->rightType=0;
     return n;
+}
+
+//线索二叉树的实现 中序
+void threadNode(Tree* tree,Node* node) {
+    // 如果为空就停止递归
+    if (!node) return;
+    // 左边
+    threadNode(tree,node->left);
+
+    if (node->left == NULL) {
+        node->left=tree->pre;
+        node->leftType=1;
+    }
+
+    if (tree->pre!=NULL && tree->pre->right == NULL){
+        tree->pre->right=node;
+        tree->pre->rightType=1;
+    }
+    tree->pre=node;
+
+
+    // 右边
+    threadNode(tree,node->right);
+
 }
 
 // 插入节点
