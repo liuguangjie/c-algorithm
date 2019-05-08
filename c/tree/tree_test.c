@@ -63,14 +63,19 @@ int main()
 
     // Node* find_0 = findNode(tree, 15);
     // printf("找到%p\n", find_0);
-    int arr[7] = {50, 20, 20, 2, 40, 25, 20};
+    int arr[7] = {50, 20, 26, 2, 40, 25, 31};
     insertArr(tree,arr,7);
-    seqTraverse(tree->root);
+    // seqTraverse(tree->root);
     printf("\n");
     middleTraverse(tree->root);
+    threadNode(tree,tree->root);
+    // printf("\n");
+    // afterTraverse(tree->root);
     printf("\n");
-    afterTraverse(tree->root);
-    printf("\n");
+
+    Node* find = findNode(tree, 40);
+    printf("%d\n",find->right->data);
+    
     return 0;
 }
 // 函数实现
