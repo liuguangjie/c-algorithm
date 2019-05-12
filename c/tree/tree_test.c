@@ -29,7 +29,6 @@ void seqTraverse(Node*); // 前序遍历树
 void middleTraverse(Node*);//中序 遍历树
 void afterTraverse(Node*);//后序 遍历树
 void insertArr(Tree* ,int*, int);// 插入数据 用数组
-
 void threadNode(Tree*,Node*); //  线索二叉树的定义
 int main(int t,char* args) 
 {
@@ -64,16 +63,16 @@ int main(int t,char* args)
 
     // Node* find_0 = findNode(tree, 15);
     // printf("找到%p\n", find_0);
-    //int arr[7] = {50, 20, 26, 2, 40, 25, 31};
-    int arr[6] = {10, 20, 15, 3, 4, 90};
-    insertArr(tree,arr,6);
+    int arr[7] = {30,50, 26, 53,  2, 25, 31};
+    //int arr[6] = {10, 20, 15, 3, 4, 90};
+    insertArr(tree,arr,7);
     // seqTraverse(tree->root);
     printf("\n");
     middleTraverse(tree->root);
     //threadNode(tree,tree->root);
     // printf("\n");
     // afterTraverse(tree->root);
-    deleteNode(tree, 10);
+    deleteNode(tree, 50);
     printf("\n");
     middleTraverse(tree->root);
     printf("\n");
