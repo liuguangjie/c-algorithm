@@ -23,14 +23,15 @@ Tree* createTree(); // 创建树
 Node* createNode(int); //创建节点
 void insertNode(Tree*,int);// 插入节点
 Node* findNode(Tree*,int);// 查找节点
-void deleteNode(Tree*,int); // 删除节点
+int deleteNode(Tree*,int); // 删除节点
+Node* getSuccessor(Node*); // 中序后续节点
 void seqTraverse(Node*); // 前序遍历树
 void middleTraverse(Node*);//中序 遍历树
 void afterTraverse(Node*);//后序 遍历树
 void insertArr(Tree* ,int*, int);// 插入数据 用数组
 
 void threadNode(Tree*,Node*); //  线索二叉树的定义
-int main() 
+int main(int t,char* args) 
 {
     Tree* tree = createTree();
     // Node* root = createNode(1);
@@ -63,18 +64,21 @@ int main()
 
     // Node* find_0 = findNode(tree, 15);
     // printf("找到%p\n", find_0);
-    int arr[7] = {50, 20, 26, 2, 40, 25, 31};
-    insertArr(tree,arr,7);
+    //int arr[7] = {50, 20, 26, 2, 40, 25, 31};
+    int arr[6] = {10, 20, 15, 3, 4, 90};
+    insertArr(tree,arr,6);
     // seqTraverse(tree->root);
     printf("\n");
     middleTraverse(tree->root);
-    threadNode(tree,tree->root);
+    //threadNode(tree,tree->root);
     // printf("\n");
     // afterTraverse(tree->root);
+    deleteNode(tree, 10);
     printf("\n");
-
-    Node* find = findNode(tree, 40);
-    printf("%d\n",find->right->data);
+    middleTraverse(tree->root);
+    printf("\n");
+    //Node* find = findNode(tree, 40);
+    //printf("%d\n",find->right->data);
     
     return 0;
 }
@@ -175,12 +179,105 @@ void insertArr(Tree* tree,int* arr, int len) {
 }
 
 // 删除节点 这个有点难
-void deleteNode(Tree* tree,int data) {
+int deleteNode(Tree* tree,int data) {
 
-    //1. 先遍历二叉树 找到树
+    //先遍历二叉树 找到树
+    Node* parent = tree->root;
+    Node* curt = tree->root;
+    int isLeft = 1;
+    while (curt!=NULL&&curt->data != data)
+    {
+        parent = curt;
+        if (curt->data > data) {
+            curt = curt->left;
+            isLeft =1;
+        } else {
+            curt = curt->right;
+            isLeft =0;
+        }
+
+        if (curt ==NULL) {
+            return 0;
+        }
+    }
+
+    //printf("deleteNode %d\n", parent->data);
+    //  1. 删除叶子节点
+    if (curt->left == NULL && curt->right==NULL) {
+        if (parent == curt) {
+            tree->root = NULL;
+        } else 
+        if(isLeft) {
+            parent->left=NULL;
+        } else {
+            parent->right=NULL; 
+        }
+    } else if (curt->right == NULL) {
+        if (parent == curt) {
+            tree->root = curt->left;
+        } else
+        if (isLeft) {
+            parent->left = curt->left;
+        } else {
+            parent->right = curt->left;
+        }
+    } else if (curt->left == NULL) {
+        if (parent == curt) {
+            tree->root = curt->right;
+        } else
+        if (isLeft) {
+            parent->left = curt->right;
+        } else {
+            parent->right = curt->right;
+        }
+    } else{
+        // 删除有2个节点的情况
+        Node* sr = getSuccessor(curt);
+        if (parent == curt) {
+            tree->root = sr;
+        } else if (isLeft) {
+            parent->left = sr;
+        } else {
+            parent->right = sr;
+        }
+        sr->left = curt->left;
+    }
+    
+    
+
+
+
+
+
+    return 1;
+
+
     // 考虑情况如下
+    //  1. 删除叶子节点
+    //  2. 删除父节点其中有一个节点
+    
+    //  3. 删除父节点其中有二个节点
 
+}
 
+Node* getSuccessor(Node* node) {
+    Node* successor = node;
+    Node* parent = node;
+    Node* curt = node->right;
+
+    while (curt!=NULL)
+    {
+        parent = successor;
+        successor = curt;
+        curt = curt->left;
+    }
+
+    //printf("%d,\n", successor->data);
+    if (successor != node->right) {
+        parent->left = successor->right;
+        successor->right = node->right;
+    }
+    return successor;
 }
 
 /*
