@@ -9,12 +9,28 @@
  数字 5 出现 2 次
  数字 4 出现 3 次
  数字 8 出现 4 次
+
+
+ 1 0 0 0 0
+ 1 2 0 0 0
+ 1 2 3 0 0
+ 1 2 3 4 0
+ 1 2 3 4 5
  */
 void toHeavy();
 
 int main()
 {
-    toHeavy();
+    //toHeavy();
+    int a = 1;
+    int b = 1;
+    int n = 5;
+    int m = 0;
+    for ( ; b <= n; b++) {
+        for ( m = 1; m <= b; m++ ) printf("%d", m);
+        for ( a = n - b; a > 0; a--) printf("%d", 0);
+        printf("\n");
+    }
     return 0;
 }
 
@@ -37,7 +53,7 @@ void toHeavy()
     Map map[4];
     int arr[4] = {0, 0, 0, 0};
     /**排序*/
-    bubbSort(orig, 10);
+    //bubbSort(orig, 10);
     
     arr[0] = orig[0];
     /**去重*/
